@@ -1,0 +1,246 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-s
+import sys
+import os
+import time
+
+ricefile = 'rice.txt'
+userpath = os.path.expanduser("~")
+
+################
+### ADD RICE ###
+################
+
+def add_rice():
+    print('Add your rice name: (enter to cancel)')
+    print('______________________')
+    sys.stdout.write("\033[F")
+    sys.stdout.flush()
+    rice = str(input().strip())
+    print('Add your rice folder path: (enter to cancel)')
+    print('Example of user folder path: ~/yourdotfiles')
+    print('______________________')
+    sys.stdout.write("\033[F")
+    sys.stdout.flush()
+    path = input().strip().strip('"')
+    if os.path.exists(path) and not rice == '':
+        print('Success! Path exists :D')
+        with open(ricefile, 'a', encoding='utf-8') as f:
+            f.write(f"{rice}|{path}\n")
+        mainmenu()
+    elif os.path.exists(path) and rice == '':
+        print('Error! Rice name was not defined')
+        add_rice()
+    elif path == '' or rice == '':
+        print('Rice add canceled, returning to menu.')
+        time.sleep(1)
+        mainmenu()
+    elif not os.path.exists(path):
+        print('Error! File path does not exist')
+        add_rice()
+
+
+###################
+### REMOVE RICE ###
+###################
+
+def delete_rice():
+    try:
+        if not os.path.exists(ricefile):
+            print("Error! rice.txt not found.")
+            time.sleep(1)
+            mainmenu()
+            return
+        with open(ricefile, 'r', encoding='utf-8') as f:
+            lines = [line.strip() for line in f if '|' in line]
+        if not lines:
+            print("Error! You don't have rices to remove")
+            time.sleep(1)
+            mainmenu()
+            return
+        maxi = len(lines)
+        maxistr = str(maxi)
+        numandaspacing = maxistr+') '+'─' * (6 +len(maxistr) * -1)
+        print(f"\n┌─ choose (1-{numandaspacing}─┬ Rice ─┐")
+        for i, line in enumerate(lines, start=1):
+            rice_name, path = line.split('|', 1)
+            
+            riceandspacing = '─ '+rice_name+' '+'─' * (18 +len(rice_name) * -1)
+            istr = str(i)
+            iandspacing = '─ '+istr+' '+'─' * (4 +len(istr) * -1)
+        
+            print(f'├{riceandspacing}┼{iandspacing}┤')
+        print(f'└─ choose (1-{numandaspacing}─┴───────┘')
+        print('Select the rice to remove or press enter to return:')
+        print('______________________')
+        sys.stdout.write("\033[F")
+        sys.stdout.flush()
+        choice = str(input().strip())
+        index = int(choice) - 1
+        if index < 0 or index >= len(lines):
+            print(f"Error! Select a number between")
+            time.sleep(1)
+            mainmenu()
+            return
+        if choice == '':
+            print('Return to main menu')
+            time.sleep(1)
+            mainmenu()
+        removed = lines.pop(index)
+        print("Are you sure you want to delete this rice?(We won't delete your rice folder don't worry) y/n: ")
+        print('______________________')
+        sys.stdout.write("\033[F")
+        sys.stdout.flush()
+        deleteconfirmation = input()
+
+        if deleteconfirmation.lower() == 'y':
+            with open(ricefile, 'w', encoding='utf-8') as f:
+                for line in lines:
+                    f.write(line + '\n')
+            rice_name = removed.split('|', 1)[0]
+            print(f"Rice '{rice_name}' was succesfully removed!")
+            time.sleep(1)
+            mainmenu()
+        else:
+            print('Error while deleting line!')
+            time.sleep(1)
+            mainmenu()
+
+    except Exception as e:
+        print(f"Error deleting line {e}!")
+        time.sleep(1)
+        mainmenu()
+
+
+#################
+### LIST RICE ###
+#################
+
+def read_rice():
+    try:
+
+        with open(ricefile, 'r', encoding='utf-8') as f:
+            print('┌─────────────────────┬───────┐')
+            for i, l in enumerate(f, start=1):
+                l = l.strip()
+                if '|' in l:
+                    rice, path = l.split('|', 1)
+                    rice = rice
+                riceandspacing = '─ '+rice+' '+'─' * (18 +len(rice) * -1)
+                istr = str(i)
+                iandspacing = '─ '+istr+' '+'─' * (4 +len(istr) * -1)
+
+                print(f'├{riceandspacing}┼{iandspacing}┤ Path: {path}')
+            print('└─────────────────────┴───────┘')
+            print('(Enter to continue)')
+            print('______________________')
+            sys.stdout.write("\033[F")
+            sys.stdout.flush()
+            continueread = input()
+            mainmenu()
+
+    except FileNotFoundError:
+        print('rice data not found, try adding it again')
+        time.sleep(1)
+        mainmenu()
+
+
+#################
+### RICE MENU ###
+#################
+
+def choose():
+    try:
+        max_i=0
+        os.system('cls' if os.name == 'nt' else 'clear')
+        with open(ricefile, 'r', encoding='utf-8') as f:
+            lines = [line.strip() for line in f if '|' in line]
+            maxi = len(lines)
+
+        maxistr = str(maxi)
+        numandaspacing = maxistr+') '+'─' * (6 +len(maxistr) * -1)
+        print(f"\n┌─ choose (0-{numandaspacing}─┬ Rice ─┐")
+        print('├─────────────────────┼───────┤')         
+
+        for i, l in enumerate(lines, start=1):
+            rice, path = l.split('|', 1)
+            riceandspacing = '─ '+rice[:18]+' '+'─' * (18 +len(rice) * -1)
+            istr = str(i)
+            iandspacing = '─ '+istr+' '+'─' * (4 +len(istr) * -1)
+            print(f'├{riceandspacing}┼{iandspacing}┤')
+
+        print('├─ back ──────────────┼─ 0 ───┤')
+        print('├─────────────────────┼───────┤')
+        print(f'└─ Choose (0-{numandaspacing}─┴───────┘')
+                    
+    except FileNotFoundError:
+        print('rice data not found, try adding it again')
+        time.sleep(1)
+        mainmenu()
+
+    print('______________________')
+        
+    sys.stdout.write("\033[F")
+    sys.stdout.flush()
+    try:
+        select = int(input())
+        if select == 0:
+            mainmenu()
+
+        elif select > 0:
+            select_line = lines[select - 1]
+            _, path = select_line.split('|', 1)
+            os.system(f'bash -c \'cp -r {path.strip()}/* {userpath}\'')
+        else:
+            print(f'Error! Type a number between 0-{maxistr}')
+            time.sleep(1)
+            choose()
+    except ValueError:
+        print(f'Error! Type a number between 0-{maxistr}')
+        choose()
+
+
+#################
+### MAIN MENU ###
+#################
+
+def mainmenu():
+    try:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("┌─ choose (1-5) ──────┬ Menu ─┐")
+        print('├─────────────────────┼───────┤')
+        print('├─ add rice ──────────┼── 1 ──┤')
+        print('├─ remove rice ───────┼── 2 ──┤')
+        print('├─ rice menu ─────────┼── 3 ──┤')
+        print('├─ list rices ────────┼── 4 ──┤')
+        print('├─ exit ──────────────┼── 5 ──┤')
+        print('└─────────────────────┴───────┘')
+        print('______________________')
+        sys.stdout.write("\033[F")
+        sys.stdout.flush()
+        select = int(input())
+
+        if select == 1:
+            os.system('cls' if os.name == 'nt' else 'clear')
+            add_rice()
+        elif select == 2:
+            os.system('cls' if os.name == 'nt' else 'clear')
+            delete_rice()
+        elif select == 3:
+            os.system('cls' if os.name == 'nt' else 'clear')            
+            choose()
+        elif select == 4:
+            os.system('cls' if os.name == 'nt' else 'clear')            
+            read_rice()
+        elif select == 5:
+            sys.exit()
+        else:
+            print('Error! Type a number between 1-5')
+            time.sleep(1)
+            mainmenu()
+
+    except ValueError:
+        print('Error! Type a number between 1-5, (value error)')
+        time.sleep(1)
+        mainmenu()
+mainmenu()
