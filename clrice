@@ -3,9 +3,17 @@
 import sys
 import os
 import time
+import subprocess
 
-ricefile = 'rice.txt'
+# txt file path, it's located on the git clonned folder, it should be inside your user folder, if not, change the path
+# example: your clrice git clonned folder is inside the Desktop folder, ricefile = '/Desktop/CLRice/rice.txt', remember to ignore the user folder, you don't type the user folder on ricefile variable, just the path after it
+ricefile = '/CLRice/rice.txt'
+
+# user folder path, This is your user folder
 userpath = os.path.expanduser("~")
+
+# this is the ricefile folder in the user directory, I did not find other way to do that shit but this, sorry for shit coding *crying emoji*, it is the used variable in the program to write and read your rices
+ricefileuser = userpath+ricefile
 
 ################
 ### ADD RICE ###
@@ -16,16 +24,20 @@ def add_rice():
     print('______________________')
     sys.stdout.write("\033[F")
     sys.stdout.flush()
+    # in rice var you input the name to display on the program, it is used to make you identify which rice you want to user in the choose() function
     rice = str(input().strip())
+
     print('Add your rice folder path: (enter to cancel)')
-    print('Example of user folder path: ~/yourdotfiles')
+    print('Example of user folder path: home/username/Desktop/yourdotfiles')
     print('______________________')
     sys.stdout.write("\033[F")
     sys.stdout.flush()
+    # in path var you input the path to the folder of your rice (your dotfiles backup folder), the program will use this var to paste the inputted folder in the userfolder and to check if the path really exists
     path = input().strip().strip('"')
+
     if os.path.exists(path) and not rice == '':
         print('Success! Path exists :D')
-        with open(ricefile, 'a', encoding='utf-8') as f:
+        with open(ricefileuser, 'a', encoding='utf-8') as f:
             f.write(f"{rice}|{path}\n")
         mainmenu()
     elif os.path.exists(path) and rice == '':
@@ -46,44 +58,43 @@ def add_rice():
 
 def delete_rice():
     try:
-        if not os.path.exists(ricefile):
+        # if the rice.txt file does not exist on the ricefileuser it shows an error and tell you it did not found the rice.txt
+        if not os.path.exists(ricefileuser):
             print("Error! rice.txt not found.")
             time.sleep(1)
             mainmenu()
-            return
-        with open(ricefile, 'r', encoding='utf-8') as f:
+
+        with open(ricefileuser, 'r', encoding='utf-8') as f:
             lines = [line.strip() for line in f if '|' in line]
         if not lines:
             print("Error! You don't have rices to remove")
             time.sleep(1)
             mainmenu()
-            return
+
+        # maxi and maxistr are the highest number of rices that you have, it is used to display on the interface, example: choose(1-maxistr)
         maxi = len(lines)
         maxistr = str(maxi)
         numandaspacing = maxistr+') '+'─' * (6 +len(maxistr) * -1)
+        # interface, you do not need to tweak this shit, only if you want to
         print(f"\n┌─ choose (1-{numandaspacing}─┬ Rice ─┐")
         for i, line in enumerate(lines, start=1):
             rice_name, path = line.split('|', 1)
-            
+
             riceandspacing = '─ '+rice_name+' '+'─' * (18 +len(rice_name) * -1)
             istr = str(i)
             iandspacing = '─ '+istr+' '+'─' * (4 +len(istr) * -1)
-        
+
             print(f'├{riceandspacing}┼{iandspacing}┤')
         print(f'└─ choose (1-{numandaspacing}─┴───────┘')
         print('Select the rice to remove or press enter to return:')
         print('______________________')
         sys.stdout.write("\033[F")
         sys.stdout.flush()
+        # ya use it to choose your rice to delete
         choice = str(input().strip())
         index = int(choice) - 1
         if index < 0 or index >= len(lines):
             print(f"Error! Select a number between")
-            time.sleep(1)
-            mainmenu()
-            return
-        if choice == '':
-            print('Return to main menu')
             time.sleep(1)
             mainmenu()
         removed = lines.pop(index)
@@ -92,9 +103,9 @@ def delete_rice():
         sys.stdout.write("\033[F")
         sys.stdout.flush()
         deleteconfirmation = input()
-
+        # remove rice part
         if deleteconfirmation.lower() == 'y':
-            with open(ricefile, 'w', encoding='utf-8') as f:
+            with open(ricefileuser, 'w', encoding='utf-8') as f:
                 for line in lines:
                     f.write(line + '\n')
             rice_name = removed.split('|', 1)[0]
@@ -105,7 +116,6 @@ def delete_rice():
             print('Error while deleting line!')
             time.sleep(1)
             mainmenu()
-
     except Exception as e:
         print(f"Error deleting line {e}!")
         time.sleep(1)
@@ -118,8 +128,8 @@ def delete_rice():
 
 def read_rice():
     try:
-
-        with open(ricefile, 'r', encoding='utf-8') as f:
+        # open the rice.txt and read the rices with their paths
+        with open(ricefileuser, 'r', encoding='utf-8') as f:
             print('┌─────────────────────┬───────┐')
             for i, l in enumerate(f, start=1):
                 l = l.strip()
@@ -128,6 +138,7 @@ def read_rice():
                     rice = rice
                 riceandspacing = '─ '+rice+' '+'─' * (18 +len(rice) * -1)
                 istr = str(i)
+                # same thing of numandspacing and riceandspacing but for enumaration
                 iandspacing = '─ '+istr+' '+'─' * (4 +len(istr) * -1)
 
                 print(f'├{riceandspacing}┼{iandspacing}┤ Path: {path}')
@@ -153,17 +164,18 @@ def choose():
     try:
         max_i=0
         os.system('cls' if os.name == 'nt' else 'clear')
-        with open(ricefile, 'r', encoding='utf-8') as f:
+        with open(ricefileuser, 'r', encoding='utf-8') as f:
             lines = [line.strip() for line in f if '|' in line]
             maxi = len(lines)
-
         maxistr = str(maxi)
+        # num and spacing var, basically if the length of the number is 1 it will create x " ─ ", if its 2 it will create x -1 ' ─ ' to make it fit on the interface
         numandaspacing = maxistr+') '+'─' * (6 +len(maxistr) * -1)
         print(f"\n┌─ choose (0-{numandaspacing}─┬ Rice ─┐")
-        print('├─────────────────────┼───────┤')         
+        print('├─────────────────────┼───────┤')
 
         for i, l in enumerate(lines, start=1):
             rice, path = l.split('|', 1)
+            # same thing as num and spacing var but for the rice name display
             riceandspacing = '─ '+rice[:18]+' '+'─' * (18 +len(rice) * -1)
             istr = str(i)
             iandspacing = '─ '+istr+' '+'─' * (4 +len(istr) * -1)
@@ -172,14 +184,16 @@ def choose():
         print('├─ back ──────────────┼─ 0 ───┤')
         print('├─────────────────────┼───────┤')
         print(f'└─ Choose (0-{numandaspacing}─┴───────┘')
-                    
+
     except FileNotFoundError:
-        print('rice data not found, try adding it again')
+        print('rice data not found, check if you have a rice.txt on your CLRrice folder')
+        print('and check if your folder is located on your userpath (~/CLRice)')
+        print('you may also modify the used by this application paths on the CLRice file')
         time.sleep(1)
         mainmenu()
 
     print('______________________')
-        
+
     sys.stdout.write("\033[F")
     sys.stdout.flush()
     try:
@@ -190,13 +204,28 @@ def choose():
         elif select > 0:
             select_line = lines[select - 1]
             _, path = select_line.split('|', 1)
-            os.system(f'bash -c \'cp -r {path.strip()}/* {userpath}\'')
+            subprocess.run(f"cp -r {path.strip()}/.* {userpath}/", shell=True)
+
+################################
+### POST RICE COMMANDS START ###
+################################
+# you should use this to restart certain apps that don't reload automatically or reload an app, the subprocess must be inside the elif select > 0:
+# the main thing is, you put the terminal command to execute inside the "", the shell=True is to run in your shell, when I disabled the shell part it just didn't work, don't try
+# if you use hyprpaper or apps that have to run on terminal and if you control c it they stop can use subprocess.Popen, after it stop shitting a thousand lines on your face you can type enter and it run as usual
+# (these are example configs, you have to modify)
+#            subprocess.run("killall hyprpaper", shell=True)
+#            subprocess.Popen("hyprpaper", shell=True)
+# uncomment the subprocess lines above to enable it
+##############################
+### POST RICE COMMANDS END ###
+##############################
+
         else:
             print(f'Error! Type a number between 0-{maxistr}')
             time.sleep(1)
             choose()
     except ValueError:
-        print(f'Error! Type a number between 0-{maxistr}')
+        print(f'Error! Type a number between 0-{maxistr} (ValueError)')
         choose()
 
 
@@ -219,21 +248,26 @@ def mainmenu():
         sys.stdout.write("\033[F")
         sys.stdout.flush()
         select = int(input())
-
+        # if input = 1 go to the add rice menu
         if select == 1:
             os.system('cls' if os.name == 'nt' else 'clear')
             add_rice()
+        # if inpuy = 2 go to delete rice menu
         elif select == 2:
             os.system('cls' if os.name == 'nt' else 'clear')
             delete_rice()
+        #if input = 3 go to rice selection menu
         elif select == 3:
-            os.system('cls' if os.name == 'nt' else 'clear')            
+            os.system('cls' if os.name == 'nt' else 'clear')
             choose()
+        #if input = 4 go to list rice menu
         elif select == 4:
-            os.system('cls' if os.name == 'nt' else 'clear')            
+            os.system('cls' if os.name == 'nt' else 'clear')
             read_rice()
+        #if input = 5 the program commit s cide
         elif select == 5:
             sys.exit()
+        #if input is not in 1-5 prints an error and go back to menu
         else:
             print('Error! Type a number between 1-5')
             time.sleep(1)
