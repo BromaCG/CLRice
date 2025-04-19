@@ -6,4 +6,4 @@ It is 100% open-source, feel free to use my code for personal projects or modify
 # HOW IT WORKS
 
 # INSTALLATION
-```git clone https://github.com/BromaCG/CLRice```
+```bash git clone https://github.com/BromaCG/CLRice```
