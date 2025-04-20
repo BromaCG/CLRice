@@ -25,7 +25,10 @@ The first thing you will see after running the program is the main menu with 5 o
 
 # INSTALLATION
 First, you need to clone the project to your computer using:
+```
     git clone github.com/BromaCG/CLRice/
-
+```
 Then, try to link the clrice python file to your path using:
+```
     sudo ln -s ~/CLRice/clrice ~/.local/bin/
+```
