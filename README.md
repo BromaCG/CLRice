@@ -13,12 +13,12 @@ As the name indicates, you should use your CLI to run the program, after complet
 
 You will have to create a backup configuration of your dotfiles, usually everything is in your ~/.config, put all these files in a .config inside a backup folder, in this readme I will suppose your backup folder name is 'Catarata'
 If you feel confused because of the explanation above, I will try to exemplify it by using hierarchy of folders
-
+```
 ~/
     ~/.config/
     ~/Catarata/
         ~/Catarata/.config/
-
+```
 
 
 The first thing you will see after running the program is the main menu with 5 options, if it's your first time in the program I recommend you to select the 'add rice' option by typing 1 in the input, you will be redirected to the add rice menu after that, the first thing you need to do is select a name to your rice, it is just a representation of your rice to remember you of which rice it is on the other menus, after inputing its name you will have to type the path to your 'Catarata', for example, if 'Catarata is inside the user folder you have to type /home/username/Catarata
