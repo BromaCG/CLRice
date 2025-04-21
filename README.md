@@ -3,7 +3,7 @@ CLRice is a minimalist but reliable UNIX CLI ricing manager
 
 It is 100% open-source, feel free to use my code for personal projects or modify my app, also, if you want to contribute to this project you may send me a pull request :)
 
-For further understanding of the app you may want to read the entire readme or read the code itself
+For further understanding of the app you may want to read the entire readme or read the code itself because the code is almost full commented
 
 ## HOW IT WORKS
 CLRice basically names your rice backup folder (for more explanation about the backup folder read the RUNNING AND TWEAKING chapter of the readme) and copy and paste into your user folder (~/), it is really a silly project but I really wanted to create something using CLI and I needed to manage my rices with a program, really cool
