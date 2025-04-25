@@ -26,7 +26,11 @@ The first thing you will see after running the program is the main menu with 5 o
 After this, you will be redirected to the main menu, you may go to the rice menu to select your rice, it will list your rices with their names and respective numbers to access them, you just need to input the correct number to your rice and it will copy your rice files to your ~/, easy as it should be
 
 ## INSTALLATION
-First, you need to clone the project to your computer using:
+First, you have to download python on your computer, you can do it using your package manager, example for Arch Linux:
+```
+sudo pacman -S python
+```
+you need to clone the project to your computer using:
 ```
 git clone github.com/BromaCG/CLRice/
 ```
